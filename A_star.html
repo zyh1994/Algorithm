@@ -42,7 +42,7 @@
         this.h = 0;
         this.neighbors = [];
         this.previous = undefined;
-        this.wall = Math.random() < 0.3 ? true : false;
+        this.wall = Math.random() < 0.2 ? true : false;
 
 
         this.show = function (col) {
@@ -130,14 +130,20 @@
                 var neighbor = neighbors[i];
                 if (!closeSet.includes(neighbor) && !neighbor.wall) {
                     var tempG = current.g + 1;
+
+                    var newPath=false;
                     if (openSet.includes(neighbor)) {
                         if (tempG < neighbor.g) {
                             neighbor.g = tempG;
+                            newPath=true;
                         }
                     } else {
                         neighbor.g = tempG;
+                        newPath=true;
                         openSet.push(neighbor);
                     }
+                    if(!newPath)
+                        continue;
                     neighbor.h = heuristic(neighbor, end);
                     neighbor.f = neighbor.g + neighbor.h;
                     neighbor.previous = current;

@@ -51,6 +51,7 @@
             ctx.fillStyle = col;
             ctx.fillRect(this.i * w + 1, this.j * h + 1, w - 2, h - 2);
         };
+
         this.addNeighbors = function (grid) {
             var i = this.i;
             var j = this.j;
@@ -67,17 +68,17 @@
             if (j > 0) {
                 this.neighbors.push(grid[i][j - 1]);
             }
-            if(i>0&&j>0){
-                this.neighbors.push(grid[i-1][j - 1]);
+            if (i > 0 && j > 0) {
+                this.neighbors.push(grid[i - 1][j - 1]);
             }
-            if(i>0&&j<rows-1){
-                this.neighbors.push(grid[i-1][j+1]);
+            if (i > 0 && j < rows - 1) {
+                this.neighbors.push(grid[i - 1][j + 1]);
             }
-            if(i<cols-1&&j<rows-1){
-                this.neighbors.push(grid[i+1][j+1]);
+            if (i < cols - 1 && j < rows - 1) {
+                this.neighbors.push(grid[i + 1][j + 1]);
             }
-            if(i>cols-1&&j>0){
-                this.neighbors.push(grid[i+1][j-1]);
+            if (i > cols - 1 && j > 0) {
+                this.neighbors.push(grid[i + 1][j - 1]);
             }
 
         }
@@ -131,22 +132,22 @@
                 if (!closeSet.includes(neighbor) && !neighbor.wall) {
                     var tempG = current.g + 1;
 
-                    var newPath=false;
+                    var newPath = false;
                     if (openSet.includes(neighbor)) {
                         if (tempG < neighbor.g) {
                             neighbor.g = tempG;
-                            newPath=true;
+                            newPath = true;
                         }
                     } else {
                         neighbor.g = tempG;
-                        newPath=true;
+                        newPath = true;
                         openSet.push(neighbor);
                     }
-                    if(!newPath)
-                        continue;
-                    neighbor.h = heuristic(neighbor, end);
-                    neighbor.f = neighbor.g + neighbor.h;
-                    neighbor.previous = current;
+                    if (newPath) {
+                        neighbor.h = heuristic(neighbor, end);
+                        neighbor.f = neighbor.g + neighbor.h;
+                        neighbor.previous = current;
+                }
                 }
             }
 
@@ -163,7 +164,7 @@
             }
         }
         for (var i = 0; i < closeSet.length; i++) {
-            closeSet[i].show("#FF0000")
+            closeSet[i].show("#FF0000");
         }
 
         for (var i = 0; i < openSet.length; i++) {
@@ -171,18 +172,17 @@
         }
 
         //Find the path
-            path = [];
-            var temp = current;
-            path.push(temp);
-            while (temp.previous) {
-                path.push(temp.previous);
-                temp = temp.previous;
-            }
+        path = [];
+        var temp = current;
+        path.push(temp);
+        while (temp.previous) {
+            path.push(temp.previous);
+            temp = temp.previous;
+        }
 
         for (var i = 0; i < path.length; i++) {
             path[i].show("#0000FF");
         }
-
 
     }
 
@@ -193,6 +193,8 @@
     openSet.push(start);
     start.wall = false;
     end.wall = false;
+
+
     t = setInterval(draw, 20);
     // console.log(grid);
     // console.log(path);

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+</body>
+<script>
+    // var Graph={};
+    // function Node(x,y,praent){
+    //     this.x=x;
+    //     this.y=y;
+    //     this.parent=parent;
+    // };
+    var cols = 7;
+    var rows = 5;
+    var grid = new Array(rows);
+
+    var type=new Object();
+    type.one="1";
+    type.zero="0";
+
+
+    var openSet = [];
+    var closeSet = [];
+
+    function init() {
+        for (let i = 0; i < rows; i++) {
+            grid[i] = new Array(cols);
+        }
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                grid[i][j] = type.one;
+                if (i > 0 && i < 4 && j === 3) {
+                    grid[i][j] = type.zero;
+                }
+            }
+        }
+    }
+
+    function print(grid) {
+        var str = [];
+        for (let i = 0; i < grid.length; i++) {
+            str.push(grid[i].join("\t"));
+        }
+        str = str.join("\r\n");
+        console.log(str);
+        // document.write(str);
+    }
+
+    init();
+    print(grid);
+
+</script>
+</html>

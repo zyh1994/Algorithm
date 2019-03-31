@@ -109,41 +109,58 @@
 
     }
 
+    /**
+     * 为了达到动画效果，设置定时器，进行循环计算，当结果计算完成，取消定时器
+     */
     function draw() {
+        //计算开始，判断可选集合是否为空，不为空开始计算。计算中可以得到计算结果，得到最短路径取消定时器。
+        //当可选集的元素被取完，仍然没有结果时，返回无结果，并终止定时器。
         if (openSet.length > 0) {
-            //we can keep going
+            //在可选集中循环获取最短路径评价f值。
             var winner = 0;
             for (var i = 0; i < openSet.length; i++) {
                 if (openSet[i].f < openSet[winner].f) {
                     winner = i;
                 }
             }
+
             var current = openSet[winner];
+            //判断最短路点是否为目标点，是停止计算，取消定时器
             if (current == end) {
                 console.log("over !");
                 clearInterval(t);
             }
+            //从可选集中移除当前点，并加入到最优集
             removeFromArray(openSet, current);
             closeSet.push(current);
-            //
+            //获取当前点的边界点集，循环判断边界点的
             var neighbors = current.neighbors;
             for (var i = 0; i < neighbors.length; i++) {
                 var neighbor = neighbors[i];
+                //判断边界点是否已经属于最优解集，或者为障碍物
+                //如果都不是，表明边界点可以被作为候选点，
                 if (!closeSet.includes(neighbor) && !neighbor.wall) {
+                    //该处需要重新考虑，通常上下左右的g值要小于肩的g值，
+                    // 且肩的g值要小于左右或上下两值和的g值（满足三角形定义：两边之和大于第三边）
+                    //此处未做任何处理。
                     var tempG = current.g + 1;
-
+                    //
                     var newPath = false;
+                    //判断边界点是否在可选集中，如果处于可选集中；当新计算的g值比原值小时，
+                    // 表明路径需要被更换，且需要更新边界点的g值。
                     if (openSet.includes(neighbor)) {
                         if (tempG < neighbor.g) {
                             neighbor.g = tempG;
                             newPath = true;
                         }
                     } else {
+                        //不在可选集中，将边界点添加进可选集。且该条路径为新路径
                         neighbor.g = tempG;
                         newPath = true;
                         openSet.push(neighbor);
                     }
                     if (newPath) {
+                        //计算h和f，并将边界点的父节点指向为当前点，用以构成路线
                         neighbor.h = heuristic(neighbor, end);
                         neighbor.f = neighbor.g + neighbor.h;
                         neighbor.previous = current;
@@ -158,6 +175,7 @@
             return;
             //no solution
         }
+        //绘图
         for (var i = 0; i < cols; i++) {
             for (var j = 0; j < rows; j++) {
                 grid[i][j].show("#FFFFFF");

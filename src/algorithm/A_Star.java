@@ -3,11 +3,14 @@ package algorithm;
 import gui.MapImp.MyMapNode;
 import gui.MyMapNodeComparator;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import static javax.swing.JOptionPane.YES_OPTION;
 
 /**
  * Created by Administrator on 2019/4/21 0021.
@@ -24,6 +27,8 @@ public class A_Star implements Algorithm {
             //获取f最小的节点
             MyMapNode current = getTheBestNode();
             if (current.equals(end)) {
+                openList.clear();
+                closeList.clear();
                 over(current);
                 return current;
             }
@@ -31,7 +36,7 @@ public class A_Star implements Algorithm {
             addToClose(current);
             List<MyMapNode> neighbors = current.getNeighbors();
             for (MyMapNode neighbor : neighbors) {
-                if(closeList.contains(neighbor)||neighbor.isWall())
+                if (closeList.contains(neighbor) || neighbor.isWall())
                     continue;
                 double temG = current.getG() + dist_between(current, neighbor);
                 if (!openList.contains(neighbor)) {
@@ -45,7 +50,8 @@ public class A_Star implements Algorithm {
                 neighbor.setF();
             }
         }
-        if(openList.isEmpty()){
+        if (openList.isEmpty()) {
+            JOptionPane.showConfirmDialog(null, "没有结果", "错误", YES_OPTION);
             System.out.println("没有结果");
         }
         return end;
@@ -77,9 +83,9 @@ public class A_Star implements Algorithm {
     }
 
     private void over(MyMapNode node) {
-        while(node!=null){
+        while (node != null) {
             node.setColor(Color.BLUE);
-            node=node.getParent();
+            node = node.getParent();
         }
     }
 }

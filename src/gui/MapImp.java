@@ -34,13 +34,6 @@ public class MapImp {
         return w_h;
     }
 
-    private void initNeighbor() {
-        for (int y = 0; y < lh; y++) {
-            for (int x = 0; x < lw; x++) {
-                nodes.get(x + y * lh).initNeighbor(x, y);
-            }
-        }
-    }
 
     public void reload() {
         if (nodes != null) {
@@ -54,6 +47,13 @@ public class MapImp {
         for (int y = 0; y < lh; y++) {
             for (int x = 0; x < lw; x++) {
                 nodes.add(new MyMapNode(x, y));
+            }
+        }
+    }
+    private void initNeighbor() {
+        for (int y = 0; y < lh; y++) {
+            for (int x = 0; x < lw; x++) {
+                nodes.get(x + y * lh).initNeighbor(x, y);
             }
         }
     }

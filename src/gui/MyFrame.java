@@ -19,7 +19,7 @@ public class MyFrame extends JFrame {
         MyPanel panel = new MyPanel(new MapImp(30, 30));
         setLayout(new BorderLayout());
         add(panel, BorderLayout.CENTER);
-        setSize(800, 600);
+        setSize(1024, 768);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         add(toolBar(panel), BorderLayout.NORTH);
@@ -70,6 +70,7 @@ public class MyFrame extends JFrame {
             System.out.println("起点:\t"+panel.getNodeStr_s());
             System.out.println("终点:\t"+panel.getNodeStr_e());
             algorithm.calculate(panel.getStartNode(),panel.getEndNode());
+            repaint();
         });
         rootPanel.add(btn);
         return rootPanel;

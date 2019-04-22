@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<canvas id="myCanvas" width="400" height="400" style="background-color: black">
+<canvas id="myCanvas" width="1800" height="1800" style="background-color: black">
 </canvas>
 </body>
 <script>
@@ -21,8 +21,8 @@
     }
 
     function heuristic(a, b) {
-        // return Math.sqrt((a.i - b.i) * (a.i - b.i) + (a.j - b.j) * (a.j - b.j));
-        return Math.abs(a.i - b.i) + Math.abs(a.j - b.j);
+        return Math.sqrt((a.i - b.i) * (a.i - b.i) + (a.j - b.j) * (a.j - b.j));
+        // return Math.abs(a.i - b.i) + Math.abs(a.j - b.j);
         // return 0;
     }
 
@@ -42,7 +42,7 @@
         this.h = 0;
         this.neighbors = [];
         this.previous = undefined;
-        this.wall = Math.random() < 0.2 ? true : false;
+        this.wall = Math.random() < 0.2 ;
 
 
         this.show = function (col) {
@@ -108,6 +108,14 @@
         }
 
     }
+    function dist_between(current, neighbor) {
+        // if(current.i==neighbor.i||current.j==neighbor.j){
+        //     return 1;
+        // }else{
+        //     return 1.414;
+        // }
+        return 1;
+    }
 
     /**
      * 为了达到动画效果，设置定时器，进行循环计算，当结果计算完成，取消定时器
@@ -142,29 +150,44 @@
                 if (!closeSet.includes(neighbor) && !neighbor.wall) {
                     //该处需要重新考虑，通常上下左右的g值要小于肩的g值，
                     // 且肩的g值要小于左右或上下两值和的g值（满足三角形定义：两边之和大于第三边）
-                    //此处未做任何处理。
-                    var tempG = current.g + 1;
+                    //此处未做任何处理。tentative_gScore := gScore[current] + dist_between(current, neighbor)
+                    var tempG = current.g + dist_between(current, neighbor);
                     //
-                    var newPath = false;
-                    //判断边界点是否在可选集中，如果处于可选集中；当新计算的g值比原值小时，
-                    // 表明路径需要被更换，且需要更新边界点的g值。
-                    if (openSet.includes(neighbor)) {
-                        if (tempG < neighbor.g) {
-                            neighbor.g = tempG;
-                            newPath = true;
-                        }
-                    } else {
-                        //不在可选集中，将边界点添加进可选集。且该条路径为新路径
-                        neighbor.g = tempG;
-                        newPath = true;
+                    // var newPath = false;
+                    // // 判断边界点是否在可选集中，如果处于可选集中；当新计算的g值比原值小时，
+                    // // 表明路径需要被更换，且需要更新边界点的g值。
+                    //     if (openSet.includes(neighbor)) {
+                    //         if (tempG < neighbor.g) {
+                    //             neighbor.g = tempG;
+                    //             newPath = true;
+                    //         }
+                    //     } else {
+                    //         //不在可选集中，将边界点添加进可选集。且该条路径为新路径
+                    //         neighbor.g = tempG;
+                    //         newPath = true;
+                    //         openSet.push(neighbor);
+                    //     }
+                    //     if (newPath) {
+                    //         //计算h和f，并将边界点的父节点指向为当前点，用以构成路线
+                    //         neighbor.h = heuristic(neighbor, end);
+                    //         neighbor.f = neighbor.g + neighbor.h;
+                    //         neighbor.previous = current;
+                    // }
+                    //如果临界点不在开放集合，将之加入到开放集合中
+                    if (!openSet.includes(neighbor)) {
                         openSet.push(neighbor);
+                    } else if (tempG >= neighbor.g) {
+                        //如果在开放集合中，判断g值是否小于所需要的扩增值
+                        continue;
                     }
-                    if (newPath) {
-                        //计算h和f，并将边界点的父节点指向为当前点，用以构成路线
-                        neighbor.h = heuristic(neighbor, end);
-                        neighbor.f = neighbor.g + neighbor.h;
-                        neighbor.previous = current;
-                }
+
+                    neighbor.h = heuristic(neighbor, end);
+                    neighbor.g = tempG;
+                    neighbor.f = neighbor.g + neighbor.h;
+                    neighbor.previous = current;
+                    //为什么？
+                    //1、如果边界点不在开放集合中，计算边界点的f，g，h值，并绑点初始点。
+                    //2、如果在集合内，由步进值重新判断该点的g值。
                 }
             }
 
@@ -201,7 +224,6 @@
         for (var i = 0; i < path.length; i++) {
             path[i].show("#0000FF");
         }
-
     }
 
 
@@ -212,8 +234,7 @@
     start.wall = false;
     end.wall = false;
 
-
-    t = setInterval(draw, 20);
+    t = setInterval(draw, 100);
     // console.log(grid);
     // console.log(path);
     //1、起点，终点，从起点获取所有可达边界集，
